@@ -99,16 +99,13 @@ def bonus(first_value, second_value, third_value):
 def game(player_id):
     results = player_finder(player_id)
     game_credit = results[0][1]
-    if game_credit > 0:
-        game_bet_size = results[0][2]
-        slot1, slot2, slot3 = values_generator()
-        bonus_size = bonus(slot1, slot2, slot3)
-        game_credit -= game_bet_size
-        win_size = bonus_size * game_bet_size
-        game_credit += win_size
-        add_values_to_db(player_id, game_credit, game_bet_size)
-    else:
-        pass
+    game_bet_size = results[0][2]
+    slot1, slot2, slot3 = values_generator()
+    bonus_size = bonus(slot1, slot2, slot3)
+    game_credit -= game_bet_size
+    win_size = bonus_size * game_bet_size
+    game_credit += win_size
+    add_values_to_db(player_id, game_credit, game_bet_size)
     return slot1, slot2, slot3, win_size, player_id, game_credit, game_bet_size
 
 

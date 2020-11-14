@@ -13,28 +13,30 @@ def start(update, context):
 
 
 def spin(update, context):
-    buttons = [[KeyboardButton(text='spin 🎰'), KeyboardButton(text='bet 💲')],
-               [KeyboardButton(text='credit 💰'), KeyboardButton(text='set_name')]]
-    keyboard = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
-    game(update.message.chat.id)
-    slot1, slot2, slot3, win_size, player_id, game_credit, bet_size = game(update.message.chat.id)
-    if game_credit > 0:
-        update.message.reply_text(f'[{slot1}][{slot2}][{slot3}]'
-                                  f'\nВыигрыш: {win_size}'
-                                  f'\nБаланс: {game_credit}'
-                                  f'\nРазмер ставки: {bet_size}'
-                                  , reply_markup=keyboard)
-    else:
-        update.message.reply_text(f'Пожалуйста пополните баланс'
-                                  f'\nБаланс: {game_credit}'
-                                  , reply_markup=keyboard)
+    try:
+        buttons = [[KeyboardButton(text='spin 🎰'), KeyboardButton(text='bet 💲')],
+                   [KeyboardButton(text='credit 💰'), KeyboardButton(text='set_name')]]
+        keyboard = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
+        # game(update.message.chat.id)
+        slot1, slot2, slot3, win_size, player_id, game_credit, bet_size = game(update.message.chat.id)
+        if game_credit > 0:
+            update.message.reply_text(f'[{slot1}][{slot2}][{slot3}]'
+                                      f'\nВыигрыш: {win_size}'
+                                      f'\nБаланс: {game_credit}'
+                                      f'\nРазмер ставки: {bet_size}'
+                                      , reply_markup=keyboard)
+        else:
+            update.message.reply_text(f'Пожалуйста пополните баланс'
+                                      f'\nБаланс: {game_credit}'
+                                      , reply_markup=keyboard)
+    except Exception as error:
+        print(error)
 
 
 def credit(update, context):
     buttons = [[KeyboardButton(text='spin 🎰'), KeyboardButton(text='bet 💲')],
                [KeyboardButton(text='credit 💰'), KeyboardButton(text='set_name')]]
     keyboard = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
-    up_balance(update.message.chat.id)
     credit_size, bet_size = up_balance(update.message.chat.id)
     update.message.reply_text(f'Ваш баланс пополнен'
                               f'\nБаланс: {credit_size}'
