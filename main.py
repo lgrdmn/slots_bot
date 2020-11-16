@@ -1,5 +1,5 @@
 from telegram import Update, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, CallbackQueryHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackContext, CallbackQueryHandler
 from slots import creator_db, up_balance, start_values, all_players, game, player_finder
 
 
@@ -14,6 +14,7 @@ def start(update, context):
             start_values(update.message.chat.id)
     except Exception as error:
         print(error)
+    return HOME
 
 
 def spin(update, context):
@@ -36,6 +37,7 @@ def spin(update, context):
                                       , reply_markup=keyboard)
     except Exception as error:
         print(error)
+    return HOME
 
 
 def credit(update, context):
@@ -50,6 +52,7 @@ def credit(update, context):
                                   , reply_markup=keyboard)
     except Exception as error:
         print(error)
+    return HOME
 
 
 def bet(update, context):
@@ -62,6 +65,15 @@ def bet(update, context):
         print(update.message.text)
     except Exception as error:
         print(error)
+    return HOME
+
+
+def default(update, _):
+    buttons = [[KeyboardButton(text='spin 🎰'), KeyboardButton(text='bet 💲')],
+               [KeyboardButton(text='credit 💰'), KeyboardButton(text='set_name')]]
+    keyboard = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
+    update.message.reply_markdown(text='Вы находитесь в Главном меню, готовы попытать удачу? 🍀', reply_markup=keyboard)
+    return HOME
 
 
 creator_db()
@@ -69,6 +81,17 @@ creator_db()
 updater = Updater("1462029373:AAExm0dW7OTsyODp4IqA2qgTSkYuHIXaDvg", use_context=True)
 
 dispatcher = updater.dispatcher
+
+HOME = 0
+
+conversation = ConversationHandler(
+    entry_points=[CommandHandler(command="start", callback=start)],
+    states={HOME: [MessageHandler(filters=Filters.regex('spin 🎰'), callback=spin),
+                   MessageHandler(filters=Filters.regex('credit 💰'), callback=credit),
+                   MessageHandler(filters=Filters.regex('bet 💲'), callback=bet)]
+            },
+    fallbacks=[MessageHandler(filters=Filters.text, callback=default)]
+)
 
 dispatcher.add_handler(CommandHandler("start", start))
 dispatcher.add_handler(MessageHandler(filters=Filters.regex('spin 🎰'), callback=spin))
