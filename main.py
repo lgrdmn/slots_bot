@@ -1,14 +1,19 @@
-from telegram import Update, KeyboardButton, ReplyKeyboardMarkup
+from telegram import Update, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, CallbackQueryHandler
 from slots import creator_db, up_balance, start_values, all_players, game, player_finder
 
 
 def start(update, context):
-    buttons = [[KeyboardButton(text='spin 🎰'), KeyboardButton(text='bet 💲')],
-               [KeyboardButton(text='credit 💰'), KeyboardButton(text='set_name')]]
-    keyboard = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
-    update.message.reply_text('Добро пожаловать в казино-бота!', reply_markup=keyboard)
-    start_values(update.message.chat.id)
+    try:
+        buttons = [[KeyboardButton(text='spin 🎰'), KeyboardButton(text='bet 💲')],
+                   [KeyboardButton(text='credit 💰'), KeyboardButton(text='set_name')]]
+        keyboard = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
+        results = player_finder(update.message.chat.id)
+        if update.message.chat.id != results[0][0]:
+            update.message.reply_text('Добро пожаловать в казино-бота!', reply_markup=keyboard)
+            start_values(update.message.chat.id)
+    except Exception as error:
+        print(error)
 
 
 def spin(update, context):
@@ -39,10 +44,22 @@ def credit(update, context):
                    [KeyboardButton(text='credit 💰'), KeyboardButton(text='set_name')]]
         keyboard = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
         credit_size, bet_size = up_balance(update.message.chat.id)
-        update.message.reply_text(f'Ваш баланс пополнен'
+        update.message.reply_text(f'Ваш баланс пополнен!'
                                   f'\nБаланс: {credit_size}'
                                   f'\nРазмер ставки: {bet_size}'
                                   , reply_markup=keyboard)
+    except Exception as error:
+        print(error)
+
+
+def bet(update, context):
+    try:
+        buttons = [[KeyboardButton(text='spin 🎰'), KeyboardButton(text='bet 💲')],
+                   [KeyboardButton(text='credit 💰'), KeyboardButton(text='set_name')]]
+        keyboard = ReplyKeyboardMarkup(buttons, resize_keyboard=True)
+        # keyboard = ReplyKeyboardRemove(True)
+        update.message.reply_text(f'Введите желаемый размер ставки!', reply_markup=keyboard)
+        print(update.message.text)
     except Exception as error:
         print(error)
 
@@ -56,7 +73,7 @@ dispatcher = updater.dispatcher
 dispatcher.add_handler(CommandHandler("start", start))
 dispatcher.add_handler(MessageHandler(filters=Filters.regex('spin 🎰'), callback=spin))
 dispatcher.add_handler(MessageHandler(filters=Filters.regex('credit 💰'), callback=credit))
-dispatcher.add_handler(MessageHandler(filters=Filters.regex('bet 💲'), callback=credit))
+dispatcher.add_handler(MessageHandler(filters=Filters.regex('bet 💲'), callback=bet))
 
 updater.start_polling()
 
