@@ -4,6 +4,7 @@ from slots import creator_db, up_balance, start_values, all_players, game, playe
 
 
 def start(update, context):
+    creator_db()
     try:
         buttons = [[KeyboardButton(text='spin 🎰'), KeyboardButton(text='bet 💲')],
                    [KeyboardButton(text='credit 💰'), KeyboardButton(text='set_name')]]
@@ -14,6 +15,7 @@ def start(update, context):
             start_values(update.message.chat.id)
     except Exception as error:
         print(error)
+        raise KeyboardInterrupt
     return HOME
 
 
@@ -37,6 +39,7 @@ def spin(update, context):
                                       , reply_markup=keyboard)
     except Exception as error:
         print(error)
+        raise KeyboardInterrupt
     return HOME
 
 
@@ -52,6 +55,7 @@ def credit(update, context):
                                   , reply_markup=keyboard)
     except Exception as error:
         print(error)
+        raise KeyboardInterrupt
     return HOME
 
 
@@ -65,6 +69,7 @@ def bet(update, context):
         print(update.message.text)
     except Exception as error:
         print(error)
+        raise KeyboardInterrupt
     return HOME
 
 
@@ -75,8 +80,6 @@ def default(update, _):
     update.message.reply_markdown(text='Вы находитесь в Главном меню, готовы попытать удачу? 🍀', reply_markup=keyboard)
     return HOME
 
-
-creator_db()
 
 updater = Updater("1462029373:AAExm0dW7OTsyODp4IqA2qgTSkYuHIXaDvg", use_context=True)
 
@@ -100,7 +103,6 @@ dispatcher.add_handler(MessageHandler(filters=Filters.regex('bet 💲'), callbac
 
 updater.start_polling()
 
-print(all_players())
 
 
 

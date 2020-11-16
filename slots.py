@@ -33,11 +33,12 @@ def start_values(start_id):
     cur = conn.cursor()
     start_credit = 0
     start_bet_size = 1
-    values = [start_id, start_credit, start_bet_size]
+    # values = [start_id, start_credit, start_bet_size]
     try:
-        cur.execute("INSERT INTO players VALUES(?, ?, ?);", values)
+        cur.execute("INSERT INTO players VALUES(?, ?, ?);", (start_id, start_credit, start_bet_size))
     except Exception as error:
         print(error)
+        raise KeyboardInterrupt
     conn.commit()
     conn.close()
 
@@ -94,6 +95,7 @@ def player_finder(player_id):
         return results
     except Exception as error:
         print(error)
+        raise KeyboardInterrupt
 
 
 def values_generator():
