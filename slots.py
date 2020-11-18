@@ -33,7 +33,6 @@ def start_values(start_id):
     cur = conn.cursor()
     start_credit = 0
     start_bet_size = 1
-    # values = [start_id, start_credit, start_bet_size]
     try:
         cur.execute("INSERT INTO players VALUES(?, ?, ?);", (start_id, start_credit, start_bet_size))
     except Exception as error:
@@ -69,7 +68,7 @@ def add_values_to_db(player_id, add_credit, add_bet_size):
 
 def up_balance(player_id):
     """ Пополнение баланса после обнуления """
-    up_credit = 100
+    up_credit = 100000
     up_bet_size = 5
     conn = sqlite3.connect('slots_players.db')
     cur = conn.cursor()
@@ -96,6 +95,20 @@ def player_finder(player_id):
     except Exception as error:
         print(error)
         raise KeyboardInterrupt
+
+
+def resize_bet(player_id, bet_size):
+    """ Изменение размера ставки """
+    conn = sqlite3.connect('slots_players.db')
+    cur = conn.cursor()
+    try:
+        cur.execute("UPDATE players SET bet_size=? WHERE id=?;",
+                    (bet_size, player_id))
+    except Exception as error:
+        print(error)
+        raise KeyboardInterrupt
+    conn.commit()
+    conn.close()
 
 
 def values_generator():
@@ -135,3 +148,6 @@ def game(player_id):
     game_credit += win_size
     add_values_to_db(player_id, game_credit, game_bet_size)
     return slot1, slot2, slot3, win_size, player_id, game_credit, game_bet_size
+
+
+# print(all_players())
