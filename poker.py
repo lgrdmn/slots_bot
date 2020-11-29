@@ -134,24 +134,24 @@ def check_combination():
     four_of_a_kind = check_four_of_a_kind(values)
     straight_flush = check_straight_flush(values)
     royal_flush = 0
-    if one_pair == 1:
-        message = 'Одна пара'
-    elif two_pair != 0:
-        message = 'Две пары'
-    elif three_of_a_kind != 0:
-        message = 'Тройка'
-    elif straight != 0:
-        message = 'Стрит'
-    elif flush != 0:
-        message = 'Флэш'
-    elif full_house != 0:
-        message = 'Фул-хаус'
-    elif four_of_a_kind != 0:
-        message = 'Каре'
+    if royal_flush != 0:
+        message = 'Роял-Флэш'
     elif straight_flush != 0:
         message = 'Стрит-Флэш'
-    elif royal_flush != 0:
-        message = 'Роял-Флэш'
+    elif four_of_a_kind != 0:
+        message = 'Каре'
+    elif full_house != 0:
+        message = 'Фул-хаус'
+    elif flush != 0:
+        message = 'Флэш'
+    elif straight != 0:
+        message = 'Стрит'
+    elif three_of_a_kind != 0:
+        message = 'Тройка'
+    elif two_pair != 0:
+        message = 'Две пары'
+    elif one_pair == 1:
+        message = 'Одна пара'
     return message
 
 
